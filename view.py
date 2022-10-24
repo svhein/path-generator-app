@@ -126,6 +126,3 @@ class View(tk.Tk):
       
     def main(self):
         self.mainloop()
-        
-    
-    

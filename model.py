@@ -3,11 +3,13 @@ import math
 import cv2
 import numpy as np
 
+# NOTE self._image must be handled as PIL.Image object. PIL.ImageTk is returned to controller
+
 class Model():
     def __init__(self):
         self.imageOriginal = None
         self._image = None
-        self._grayScaleImage = None
+        self._canvasImage = None
         
         self._width = 1
         self._height = 1
@@ -27,8 +29,14 @@ class Model():
     def getHeight(self):
         return self._height
         
-    def get_PIL_Image(self):
+    def get_Tk_Image(self):
         return ImageTk.PhotoImage(self._image)
+    
+    def get_canvas(self):
+        if (self._canvasImage):
+           return self._canvasImage 
+        raise Exception("Canvas is empty")
+        
     
     def setImage(self, img):
         self._image = img
@@ -72,22 +80,15 @@ class Model():
         # cv2.imwrite('grayTest.jpg', grayImage)
         # cv2.imwrite('treshholdTest.jpg', imageTH)
     
-        pil_image = Image.fromarray(imageTH) 
-        self.imageTk = ImageTk.PhotoImage(pil_image)
-        self.convertedImg = ImageTk.getimage(self.imageTk)
-        self._grayScaleImage = self.convertedImg
-        self._image = self.convertedImg
-        return self.convertedImg
-        
-
+        self.pil_image = Image.fromarray(imageTH) 
+        self.imageTk = ImageTk.PhotoImage(self.pil_image)
+        self._canvasImage = self.imageTk
+        # self.convertedImg = ImageTk.getimage(self.imageTk)
+        return self.imageTk
     
-
-        
-        
-
-        
-        
-    
-        
-    
-    
+    def save_image_jpg(self, image):
+        img = ImageTk.getimage(image)
+        img = img.convert('RGB') # discard alpha channel
+        fileName = 'canvas.jpg'
+        img.save(os.path.join(os.getcwd(), fileName), 'JPEG')
+        img.close()

@@ -20,6 +20,7 @@ class Controller():
         # scale image to fit the canvas
         img = Image.open(pathToImage)
         self.model.setImage(img)  
+        self.model.imageOriginal = img
         self.view.canvasSlider_X.set(self.model.getWidth())
         self.view.canvasSlider_Y.set(self.model.getHeight())
         img = self.model.scale_image()
@@ -32,7 +33,7 @@ class Controller():
         self.model.setWidth(self.view.canvasSlider_X.get())
         self.model.setHeight(self.view.canvasSlider_Y.get())
         self.view.canvas.delete("all")
-        self._newImg = self.model.get_PIL_Image()
+        self._newImg = self.model.get_Tk_Image()
         self.view.canvas.create_image(300,300, image = self._newImg)
         print('canvas slider fired')
         # self.image = self.image.resize((self.x, self.y), Image.ANTIALIAS)
@@ -45,8 +46,7 @@ class Controller():
         maxValue = self.view.maxValueSlider.get()
         blockSize = self.view.blockSizeSlider.get()
         constant = self.view.constantSlider.get()
-        self.model.convert_to_grayscale(maxValue, blockSize, constant) 
-        self.configImg = self.model.get_PIL_Image()
+        self.configImg = self.model.convert_to_grayscale(maxValue, blockSize, constant) 
         self.view.canvas.create_image(300, 300, image = self.configImg)
         
     def resetCanvasImage(self):
@@ -54,7 +54,8 @@ class Controller():
         self.model.setImage(self.model.imageOriginal)
         self.view.canvasSlider_X.set(self.model.getWidth())
         self.view.canvasSlider_Y.set(self.model.getHeight())
-        self.view.canvas.create_image(300, 300, image = self.model.get_PIL_Image())
+        self.resetImg = self.model.get_Tk_Image()
+        self.view.canvas.create_image(300, 300, image = self.resetImg)
               
 if __name__ == '__main__':
     app = Controller()
