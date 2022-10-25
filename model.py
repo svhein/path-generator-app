@@ -2,17 +2,22 @@ from PIL import Image,ImageTk
 import math
 import cv2
 import numpy as np
+from path_calculator import pathCalculator
+import os
+
 
 # NOTE self._image must be handled as PIL.Image object. PIL.ImageTk is returned to controller
 
 class Model():
-    def __init__(self):
+    def __init__(self, showPointsCallback):
         self.imageOriginal = None
         self._image = None
         self._canvasImage = None
-        
+    
         self._width = 1
         self._height = 1
+        
+        self.showPointsCallback = showPointsCallback
         
     def setWidth(self, width):
         self._width = width
@@ -84,6 +89,7 @@ class Model():
         self.imageTk = ImageTk.PhotoImage(self.pil_image)
         self._canvasImage = self.imageTk
         # self.convertedImg = ImageTk.getimage(self.imageTk)
+        self.save_image_jpg(self._canvasImage)
         return self.imageTk
     
     def save_image_jpg(self, image):
@@ -92,3 +98,9 @@ class Model():
         fileName = 'canvas.jpg'
         img.save(os.path.join(os.getcwd(), fileName), 'JPEG')
         img.close()
+        
+    def calculatePath(self):
+        self.calculator = pathCalculator(self.showPointsCallback)
+
+        
+    

@@ -6,8 +6,9 @@ from PIL import Image,ImageTk, ImageGrab
 class Controller():
     def __init__(self):
         self.view = View(self)
-        self.model = Model()
+        self.model = Model(self.view.showPointsCallback)
         
+    
     def main(self):
         self.view.main()
         

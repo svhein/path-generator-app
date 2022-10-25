@@ -15,10 +15,10 @@ class View(tk.Tk):
         self.image = None
         self.controller = Controller
         
-        self._create_widgets()
+        self.__create_widgets()
         
     
-    def _create_widgets(self):
+    def __create_widgets(self):
         
         self.canvas = Canvas(self, width = 600, height = 600, bg = 'white', bd = 0, highlightthickness = 0)
         self.canvas.place(x = 350, rely = 0.5, anchor = CENTER)
@@ -111,6 +111,14 @@ class View(tk.Tk):
         )
         self.resetButton.place( x = 800, y = 10)
         
+        self.pointVar = tk.StringVar()
+        self.pointVar.set('testi')
+        self.pointLabel = tk.Label(
+            self,
+            textvariable = self.pointVar
+        )
+        self.pointLabel.place(x = 900, y = 200)
+        
         # self.saveButton = tk.Button(
         #     self,
         #     text = 'save',
@@ -123,6 +131,10 @@ class View(tk.Tk):
             width = 20
         )
         self.wordInput.place( x = 770, y = 500)
+        
+    def showPointsCallback(self, point):
+        self.pointVar.set(point)
+        self.update()
       
     def main(self):
         self.mainloop()
