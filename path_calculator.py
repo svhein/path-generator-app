@@ -6,12 +6,13 @@ from math import sqrt
 import json
 
 class pathCalculator:
-    def __init__(self, showPointsCallback, filename: str = 'treshholdTest.jpg'):
-        self.filename = filename
-        self.img = cv2.imread(filename)
-        self.width, self.height = self.img.shape[:2]
+    def __init__(self, showPointsCallback):
+        # self.filename = filename
+        # self.img = cv2.imread(filename)
+        # self.width, self.height = self.img.shape[:2]
         # print(f'width: {self.width} height: {self.height}') 
         self.pointsToDraw = []
+        self.dict = {}
         self.pathJson = []
         self.showPointsCallback = showPointsCallback
         
@@ -21,6 +22,7 @@ class pathCalculator:
                 pixel = self.img[x, y]           ## arvo joko 0 0 0 tai 255 255 255 joten eka arvo riittää
                 if (pixel[0] < 150):
                     self.pointsToDraw.append((x, y))
+                    self.dict[(x,y)] = 1
         
     def __findClosestPoint(self, x, y):
         closestDistance = 10000 
@@ -72,6 +74,10 @@ class pathCalculator:
         pass
      
     def calculatePath(self):
+        
+        self.__filename = 'canvas.jpg'
+        self.img = cv2.imread(self.__filename)
+        self.width, self.height = self.img.shape[:2]
        
         self.__findPointsToDraw()
         lastX, lastY, lastZ = 0, 0, 0
@@ -95,11 +101,18 @@ class pathCalculator:
             print(i)
             lastX = x
             lastY = y
+            
+        # with open('dict_test.json', 'w') as f:
+        #     json.dump(self.dict, f, indent = 1)
           
         # askFileName = input('nimi tiedostolle: ')
         with open('testiii.json', 'w') as file:
             json.dump(self.pathJson, file, indent=1)    
             
+        return self.pathJson
+    
+    
+        
             
 # import time
 # start = time.time()

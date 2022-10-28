@@ -9,7 +9,7 @@ import os
 # NOTE self._image must be handled as PIL.Image object. PIL.ImageTk is returned to controller
 
 class Model():
-    def __init__(self, showPointsCallback):
+    def __init__(self, showPointsCallback, filterCallback):
         self.imageOriginal = None
         self._image = None
         self._canvasImage = None
@@ -17,7 +17,8 @@ class Model():
         self._width = 1
         self._height = 1
         
-        self.showPointsCallback = showPointsCallback
+        self.calculator = pathCalculator(showPointsCallback)
+        self._path = None
         
     def setWidth(self, width):
         self._width = width
@@ -81,9 +82,6 @@ class Model():
                                         cv2.THRESH_BINARY,
                                         blockSize,
                                         constant)
-        
-        # cv2.imwrite('grayTest.jpg', grayImage)
-        # cv2.imwrite('treshholdTest.jpg', imageTH)
     
         self.pil_image = Image.fromarray(imageTH) 
         self.imageTk = ImageTk.PhotoImage(self.pil_image)
@@ -100,7 +98,14 @@ class Model():
         img.close()
         
     def calculatePath(self):
-        self.calculator = pathCalculator(self.showPointsCallback)
+        self._path = self.calculator.calculatePath()
+        
+    def filter(self):
+        if (self._path):
+            for coordinate in self._path:
+                x, y = coordinate["x"], coordinate["y"]
+                
+        
 
         
     

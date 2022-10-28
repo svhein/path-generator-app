@@ -6,9 +6,9 @@ from PIL import Image,ImageTk, ImageGrab
 class Controller():
     def __init__(self):
         self.view = View(self)
-        self.model = Model(self.view.showPointsCallback)
-        
-    
+        self.model = Model(self.view.showPointsCallback,
+                           self.view.filterCallback)
+         
     def main(self):
         self.view.main()
         
@@ -57,6 +57,12 @@ class Controller():
         self.view.canvasSlider_Y.set(self.model.getHeight())
         self.resetImg = self.model.get_Tk_Image()
         self.view.canvas.create_image(300, 300, image = self.resetImg)
+        
+    def onCalculateButtonPress(self):
+        self.model.calculatePath()
+        
+    def onFilterButtonPress(self):
+        self.model.filter()
               
 if __name__ == '__main__':
     app = Controller()

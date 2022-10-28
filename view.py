@@ -119,6 +119,21 @@ class View(tk.Tk):
         )
         self.pointLabel.place(x = 900, y = 200)
         
+        self.calculateButton = tk.Button(
+            self,
+            text = 'calculate',
+            command = self.controller.onCalculateButtonPress
+        )
+        self.calculateButton.place(x = 800, y= 200)
+        
+        self.filterButton = tk.Button(
+            self,
+            text = 'filter',
+            command = self.controller.onFilterButtonPress
+        )
+        self.filterButton.place(x = 800, y= 300)
+        
+        
         # self.saveButton = tk.Button(
         #     self,
         #     text = 'save',
@@ -135,6 +150,9 @@ class View(tk.Tk):
     def showPointsCallback(self, point):
         self.pointVar.set(point)
         self.update()
+        
+    def filterCallback(self):
+        pass
       
     def main(self):
         self.mainloop()
