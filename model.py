@@ -18,6 +18,7 @@ class Model():
         self._height = 1
         
         self.calculator = pathCalculator(showPointsCallback)
+        self.filterCallback = filterCallback
         self._path = None
         
     def setWidth(self, width):
@@ -101,9 +102,26 @@ class Model():
         self._path = self.calculator.calculatePath()
         
     def filter(self):
-        if (self._path):
-            for coordinate in self._path:
-                x, y = coordinate["x"], coordinate["y"]
+        self._points = self.calculator.getPointsToDraw()
+        factor = 3
+        
+        def iterateDict():
+            for point in self._points.copy():
+                x, y = point[0], point[1]
+                for i in range(-factor, factor + 1):
+                    for j in range(-factor, factor + 1):
+                        if (x + i, y + j) in self._points:
+                            print(f'found point {x+i} {y+j} near point {x} {y} ...continue')
+                            self._points.pop((x + i, y + j))
+                            iterateDict()
+                        
+        iterateDict()
+        print('filter done, points left')
+        print(self._points)
+        for point in self._points:
+            self.filterCallback(point)
+                        
+  
                 
         
 
