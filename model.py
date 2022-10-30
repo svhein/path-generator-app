@@ -6,6 +6,7 @@ from path_calculator import pathCalculator
 import os
 
 
+
 # NOTE self._image must be handled as PIL.Image object. PIL.ImageTk is returned to controller
 
 class Model():
@@ -101,29 +102,29 @@ class Model():
     def calculatePath(self):
         self._path = self.calculator.calculatePath()
         
-    def filter(self):
-        self._points = self.calculator.getPointsToDraw()
-        factor = 3
-        
-        def iterateDict():
-            for point in self._points.copy():
-                x, y = point[0], point[1]
-                for i in range(-factor, factor + 1):
-                    for j in range(-factor, factor + 1):
-                        if (x + i, y + j) in self._points:
-                            print(f'found point {x+i} {y+j} near point {x} {y} ...continue')
-                            self._points.pop((x + i, y + j))
-                            iterateDict()
-                        
-        iterateDict()
-        print('filter done, points left')
-        print(self._points)
-        for point in self._points:
-            self.filterCallback(point)
-                        
-  
-                
+    # def filter(self):
+    #     image = cv2.imread('canvas.jpg')
+    #     dst = cv2.fastNlMeansDenoising(image,None, h=100, templateWindowSize=1, searchWindowSize=5)
+    #     cv2.imshow('', dst)
         
 
+    def filter(self):
+        self._points = list(self.calculator.getPointsToDraw().keys())
+        self._filteredList = self._points.copy()
+        blockSize = 10
+        print(self._filteredList)
+        for point in self._points:
+            x, y = point[0], point[1]
+            for i in range(-blockSize, blockSize + 1):
+                for j in range(-blockSize, blockSize + 1):
+                    if (i != 0 and j != 0) and ((x + i, y + j) in self._points):
+                        if ((x, y) in self._filteredList):
+                            self._filteredList.remove((x, y))
+                        if ((x + i, y + j) in self._filteredList):
+                            self._filteredList.remove((x + i, y + j))
+        print(self._filteredList) 
+        for point in self._filteredList:
+            self.filterCallback(point)               
         
-    
+        
+   
