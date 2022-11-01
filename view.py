@@ -98,7 +98,7 @@ class View(tk.Tk):
         self.constantSlider.place(x = 1050, y = 60)
         
         self.maxValueSlider.set(225)
-        self.blockSizeSlider.set(9)
+        self.blockSizeSlider.set(3)
         self.constantSlider.set(1)
         
         self.openFileButton = tk.Button(self, text = "Upload Image", command = self.controller.openImageFile)
@@ -149,10 +149,13 @@ class View(tk.Tk):
         
     def showPointsCallback(self, point):
         self.pointVar.set(point)
+        x, y = point[1], point[0]
+        self.canvas.create_oval(x, y, x, y, width = 0, fill = 'green')
         self.update()
         
-    def filterCallback(self):
-        pass
+    def filterCallback(self, point: tuple):
+        x, y = point[1], point[0]
+        self.canvas.create_oval(x, y, x, y, width = 0, fill = 'red')
       
     def main(self):
         self.mainloop()

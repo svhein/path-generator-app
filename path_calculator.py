@@ -17,6 +17,11 @@ class pathCalculator:
         self.showPointsCallback = showPointsCallback
         
     def __findPointsToDraw(self):
+        
+        if not (self.width):
+            self.img = cv2.imread('canvas.jpg')
+            self.width, self.height = self.img.shape[:2]
+        
         for x in range(0, self.width - 1 , 1):
             for y in range (0, self.height - 1, 1):
                 pixel = self.img[x, y]           ## arvo joko 0 0 0 tai 255 255 255 joten eka arvo riittää
@@ -29,10 +34,10 @@ class pathCalculator:
         closestPoint = (600,600)
         # print(f'finding closest point ({x},{y})')
         for point in self.pointsToDraw:
-           distance = sqrt(((x - point[0])**2) + ((y - point[1])**2))
-           if (distance < closestDistance):
-               closestPoint = point
-               closestDistance = distance
+            distance = sqrt(((x - point[0])**2) + ((y - point[1])**2))
+            if (distance < closestDistance):
+                closestPoint = point
+                closestDistance = distance
         # print('find closest point done')
         self.pointsToDraw.remove(closestPoint)
         return closestPoint 
@@ -73,8 +78,8 @@ class pathCalculator:
             # print(f'coordinates added: ({memory_x},{memory_y},{memory_z})')
         pass
      
-    def calculatePath(self):
-        
+    def calculatePath(self) -> list:
+        '''returns path in list of objects (each object is coordinate)'''
         self.__filename = 'canvas.jpg'
         self.img = cv2.imread(self.__filename)
         self.width, self.height = self.img.shape[:2]
@@ -97,7 +102,7 @@ class pathCalculator:
                 self.__AddPathBetweenPoints(lastX,lastY,lastZ,x,y,10)
                 self.__AddPathBetweenPoints(x,y,10,x,y,0)
                 i += 1
-            self.showPointsCallback(i)
+            self.showPointsCallback((x, y))
             print(i)
             lastX = x
             lastY = y
@@ -112,7 +117,10 @@ class pathCalculator:
         return self.pathJson
     
     
-        
+    def getPointsToDraw(self) -> dict:
+        '''return dictionary of which keys are coordinates of drawable points on the canvas'''
+        self.__findPointsToDraw()
+        return self.dict
             
 # import time
 # start = time.time()

@@ -120,9 +120,10 @@ class Model():
                     if (i != 0 and j != 0) and ((x + i, y + j) in self._points):
                         if ((x, y) in self._filteredList):
                             self._filteredList.remove((x, y))
-                        if ((x + i, y + j) in self._filteredList):
-                            self._filteredList.remove((x + i, y + j))
-        print(self._filteredList) 
+                            continue
+                        # if ((x + i, y + j) in self._filteredList):
+                        #     self._filteredList.remove((x + i, y + j))
+        # print(self._filteredList) 
         for point in self._filteredList:
             self.filterCallback(point)               
         
