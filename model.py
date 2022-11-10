@@ -18,9 +18,16 @@ class Model():
         self._width = 1
         self._height = 1
         
+        self.eraseActivated = False
+        
         self.calculator = pathCalculator(showPointsCallback)
         self.filterCallback = filterCallback
         self._path = None
+        
+        self._brush_radius = 4
+        self._circleAreaPoints = self.__circleArea(self._brush_radius)
+        
+    
         
     def setWidth(self, width):
         self._width = width
@@ -106,6 +113,17 @@ class Model():
     #     image = cv2.imread('canvas.jpg')
     #     dst = cv2.fastNlMeansDenoising(image,None, h=100, templateWindowSize=1, searchWindowSize=5)
     #     cv2.imshow('', dst)
+    
+    def erase(self, event):
+            x, y = event.x, event.y
+            image = cv2.imread("canvas.jpg")
+            r = 5
+            # for i in range (-r , r + 1):
+            #     for j in range (-(r-i), r-i):
+            #         image[x+i][y+j] = (255, 255, 255)
+            for i, j in self._circleAreaPoints:
+                image[y + j][x + i] = (0, 0 ,255) #FIXME: coordinates wrong way
+            cv2.imwrite('canvas.jpg', image)
         
 
     def filter(self):
@@ -125,7 +143,18 @@ class Model():
                         #     self._filteredList.remove((x + i, y + j))
         # print(self._filteredList) 
         for point in self._filteredList:
-            self.filterCallback(point)               
+            self.filterCallback(point)       
+            
+    def __circleArea(self, r):
+        x0 = 0
+        y0 = 0
+        coordinates = []
+        for i in range(-r , r + 1):
+                for j in range(-r, r + 1):
+                    if (i - x0)**2 + (j - y0)**2 <= r**2:
+                        coordinates.append((i, j))
+        return coordinates
+                        
         
         
    

@@ -15,14 +15,36 @@ class View(tk.Tk):
         self.image = None
         self.controller = Controller
         
+        self.canvas = Canvas(self, width = 600, height = 600, bg = 'white', bd = 0, highlightthickness = 0)
+        self.canvas.place(x = 350, rely = 0.5, anchor = CENTER)
+        self.circle = None
+        
+        self.canvas.bind("<Button-1>", self.bindEvent)
+        self.canvas.bind('<B1-Motion>', self.bindEvent)
+        self.canvas.bind('<Motion>', self.drawCircle)
+        
         self.__create_widgets()
         
+    def bindEvent(self, event):
+        self.controller.onCanvasClick(event)
+        self.drawCircle(event)
+        
+    def drawCircle(self, event, r = 10):
+        if(self.circle):
+            self.canvas.delete(self.circle)
+        x, y = event.x, event.y
+        x0 = x - r
+        y0 = y - r
+        x1 = x + r
+        y1 = y + r
+        self.circle = self.canvas.create_oval(x0, y0, x1, y1 )
     
     def __create_widgets(self):
         
-        self.canvas = Canvas(self, width = 600, height = 600, bg = 'white', bd = 0, highlightthickness = 0)
-        self.canvas.place(x = 350, rely = 0.5, anchor = CENTER)
+        # self.canvas = Canvas(self, width = 600, height = 600, bg = 'white', bd = 0, highlightthickness = 0)
+        # self.canvas.place(x = 350, rely = 0.5, anchor = CENTER
         
+         
         self.font10 = TkFont.Font(
             size = 8
         )
@@ -132,6 +154,14 @@ class View(tk.Tk):
             command = self.controller.onFilterButtonPress
         )
         self.filterButton.place(x = 800, y= 300)
+        
+        self.eraseButton = tk.Button(
+            self,
+            text = 'Erase',
+            relief = RAISED,
+            command = self.controller.onEraseButtonClick
+        )
+        self.eraseButton.place(x = 150, y = 675)
         
         
         # self.saveButton = tk.Button(

@@ -1,3 +1,4 @@
+from tkinter import RAISED, SUNKEN
 from view import View
 from model import Model
 from tkinter.filedialog import askopenfilename
@@ -63,6 +64,19 @@ class Controller():
         
     def onFilterButtonPress(self):
         self.model.filter()
+        
+    def onEraseButtonClick(self):
+        self.model.eraseActivated = not bool(self.model.eraseActivated)
+        if (self.model.eraseActivated):
+            self.view.eraseButton.config(relief = SUNKEN)
+        if not (self.model.eraseActivated):
+            self.view.eraseButton.config(relief = RAISED)
+        pass
+    
+    def onCanvasClick(self, event):
+        if(self.model.eraseActivated):
+            print(self.model.eraseActivated)
+            self.model.erase(event)
               
 if __name__ == '__main__':
     app = Controller()
