@@ -15,6 +15,7 @@ class pathCalculator:
         self.dict = {}
         self.pathJson = []
         self.showPointsCallback = showPointsCallback
+        self.width = None
         
     def __findPointsToDraw(self):
         
@@ -80,6 +81,7 @@ class pathCalculator:
      
     def calculatePath(self) -> list:
         '''returns path in list of objects (each object is coordinate)'''
+        print('Calculating path...')
         self.__filename = 'canvas.jpg'
         self.img = cv2.imread(self.__filename)
         self.width, self.height = self.img.shape[:2]
@@ -103,7 +105,7 @@ class pathCalculator:
                 self.__AddPathBetweenPoints(x,y,10,x,y,0)
                 i += 1
             self.showPointsCallback((x, y))
-            print(i)
+            # print(i)
             lastX = x
             lastY = y
             
@@ -113,7 +115,7 @@ class pathCalculator:
         # askFileName = input('nimi tiedostolle: ')
         with open('testiii.json', 'w') as file:
             json.dump(self.pathJson, file, indent=1)    
-            
+        print('...Calculating done')
         return self.pathJson
     
     
@@ -121,13 +123,3 @@ class pathCalculator:
         '''return dictionary of which keys are coordinates of drawable points on the canvas'''
         self.__findPointsToDraw()
         return self.dict
-            
-# import time
-# start = time.time()
-
-# calculator = pathCalculator(showPointsCallback=None)
-# calculator.calculatePath()
-
-# end = time.time()
-
-# print(end-start)

@@ -4,6 +4,9 @@ from model import Model
 from tkinter.filedialog import askopenfilename
 from PIL import Image,ImageTk, ImageGrab
 
+import sys
+sys.setrecursionlimit(10000)
+
 class Controller():
     def __init__(self):
         self.view = View(self)
@@ -37,14 +40,12 @@ class Controller():
         self.view.canvas.delete("all")
         self._newImg = self.model.get_Tk_Image()
         self.view.canvas.create_image(300,300, image = self._newImg)
-        print('canvas slider fired')
         # self.image = self.image.resize((self.x, self.y), Image.ANTIALIAS)
         # self.imgTk = ImageTk.PhotoImage(self.image)
         # self.canvas.create_image(300, 300, image = self.imgTk)
         
     def onConfigSliderChange(self, value):
     
-        print('slider change fired')
         maxValue = self.view.maxValueSlider.get()
         blockSize = self.view.blockSizeSlider.get()
         constant = self.view.constantSlider.get()
@@ -75,8 +76,8 @@ class Controller():
     
     def onCanvasClick(self, event):
         if(self.model.eraseActivated):
-            print(self.model.eraseActivated)
-            self.model.erase(event)
+            erasedImg = self.model.erase(event)
+            self.view.canvas.create_image(300, 300, image = erasedImg)
               
 if __name__ == '__main__':
     app = Controller()

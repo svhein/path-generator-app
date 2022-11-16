@@ -1,6 +1,9 @@
 import tkinter as tk
 from tkinter import *
 import tkinter.font as TkFont
+from tkinter import scrolledtext
+import sys
+from logger import tkinterLogger
 
 
 class View(tk.Tk):
@@ -88,6 +91,7 @@ class View(tk.Tk):
             'activebackground': 'gray' 
             }
         
+        #FIXME: maxValueSlider not in use
         self.maxValueSlider = tk.Scale(
             self,
             **self.sliderArgs,
@@ -96,7 +100,7 @@ class View(tk.Tk):
             to = 255,
             command = self.controller.onConfigSliderChange
         )
-        self.maxValueSlider.place(x = 670, y = 60)
+        # self.maxValueSlider.place(x = 670, y = 60)
         
         # blockSize % 2 == 1 && blockSize > 1
         self.blockSizeSlider = tk.Scale(
@@ -107,7 +111,7 @@ class View(tk.Tk):
             to = 100,
             command = self.controller.onConfigSliderChange
         )
-        self.blockSizeSlider.place(x = 860, y = 60)     
+        self.blockSizeSlider.place(x = 670, y = 60)     
         
         self.constantSlider = tk.Scale(
             self,
@@ -117,9 +121,9 @@ class View(tk.Tk):
             to = 32,
             command = self.controller.onConfigSliderChange
         )                  
-        self.constantSlider.place(x = 1050, y = 60)
+        self.constantSlider.place(x = 670, y = 135)
         
-        self.maxValueSlider.set(225)
+        self.maxValueSlider.set(255)
         self.blockSizeSlider.set(3)
         self.constantSlider.set(1)
         
@@ -141,19 +145,34 @@ class View(tk.Tk):
         )
         self.pointLabel.place(x = 900, y = 200)
         
+        filterText = tk.Label(self, text = 'Filter Size' )
+        filterText.place(x = 670, y = 200)
+        
+        self.filterEntryVar = tk.StringVar()
+        self.filterEntryVar.set(5)
+        self.filterEntry = tk.Entry(
+            self,
+            text = self.filterEntryVar,
+            width = 3
+        )
+        
+        self.filterEntry.place(x= 750, y = 200)
+        
         self.calculateButton = tk.Button(
             self,
-            text = 'calculate',
+            text = 'Calculate Path',
+            width = 24,
             command = self.controller.onCalculateButtonPress
         )
-        self.calculateButton.place(x = 800, y= 200)
+        self.calculateButton.place(x = 670, y= 270)
         
         self.filterButton = tk.Button(
             self,
-            text = 'filter',
+            text = 'Filter',
+            width = 24,
             command = self.controller.onFilterButtonPress
         )
-        self.filterButton.place(x = 800, y= 300)
+        self.filterButton.place(x = 670, y= 235)
         
         self.eraseButton = tk.Button(
             self,
@@ -163,7 +182,17 @@ class View(tk.Tk):
         )
         self.eraseButton.place(x = 150, y = 675)
         
-        
+        self.loggingBox = tk.scrolledtext.ScrolledText(
+            self,
+            height=7,
+            width=25 ,
+            fg = "white",
+            bg = 'black'  
+        )
+        tkLogger = tkinterLogger(self.loggingBox)
+        sys.stdout = tkLogger
+        self.loggingBox.place(x = 670, y = 500)
+
         # self.saveButton = tk.Button(
         #     self,
         #     text = 'save',
@@ -175,7 +204,7 @@ class View(tk.Tk):
             self,
             width = 20
         )
-        self.wordInput.place( x = 770, y = 500)
+        self.wordInput.place(x = 670, y = 400)
         
     def showPointsCallback(self, point):
         self.pointVar.set(point)
