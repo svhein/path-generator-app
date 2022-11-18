@@ -164,7 +164,7 @@ class View(tk.Tk):
             width = 24,
             command = self.controller.onCalculateButtonPress
         )
-        self.calculateButton.place(x = 670, y= 270)
+        self.calculateButton.place(x = 670, y= 305)
         
         self.filterButton = tk.Button(
             self,
@@ -173,6 +173,14 @@ class View(tk.Tk):
             command = self.controller.onFilterButtonPress
         )
         self.filterButton.place(x = 670, y= 235)
+        
+        self.removeFilteredButton = tk.Button(
+            self,
+            text = "Remove Filtered",
+            width = 24,
+            state = "disabled"
+        )
+        self.removeFilteredButton.place(x = 670, y = 270)
         
         self.eraseButton = tk.Button(
             self,
@@ -192,13 +200,14 @@ class View(tk.Tk):
         tkLogger = tkinterLogger(self.loggingBox)
         sys.stdout = tkLogger
         self.loggingBox.place(x = 670, y = 500)
-
-        # self.saveButton = tk.Button(
-        #     self,
-        #     text = 'save',
-        #     command = self.convert
-        # )
-        # self.saveButton.place(x = 900, y = 10)
+        
+        self.dataBaseButton = tk.Button(
+            self,
+            text = "Send to Database",
+            command = self.controller.onDatabaseButtonClick
+        )
+        self.dataBaseButton.place(x = 670, y = 450)
+        
         
         self.wordInput = tk.Entry(
             self,

@@ -4,6 +4,7 @@ from model import Model
 from tkinter.filedialog import askopenfilename
 from PIL import Image,ImageTk, ImageGrab
 
+
 import sys
 sys.setrecursionlimit(10000)
 
@@ -78,6 +79,10 @@ class Controller():
         if(self.model.eraseActivated):
             erasedImg = self.model.erase(event)
             self.view.canvas.create_image(300, 300, image = erasedImg)
+            
+    def onDatabaseButtonClick(self):
+        self.model.sendToDB()
+        
               
 if __name__ == '__main__':
     app = Controller()

@@ -4,6 +4,8 @@ import cv2
 import numpy as np
 from path_calculator import pathCalculator
 import os
+import firebase_admin
+
 
 # NOTE self._image must be handled as PIL.Image object. PIL.ImageTk is returned to controller
 
@@ -24,6 +26,15 @@ class Model():
         
         self._brush_radius = 4
         self._circleAreaPoints = self.__getCircleArea(self._brush_radius)
+        
+        try:
+            cred_obj = firebase_admin.credentials.Certificate("./service_account.json")
+            self.firebase = firebase_admin.initialize_app(cred_obj)
+            print('Succesfully connected to the database')
+        except Exception as e:
+            # print(e)
+            print('Unable to connect to the database')   
+        
         
     def setWidth(self, width):
         self._width = width
@@ -126,6 +137,8 @@ class Model():
             self.imageTk = ImageTk.PhotoImage(pil_image)
             return self.imageTk
         
+    
+        
     # toimiva:
     # def filter(self):
     #     self._points = list(self.calculator.getPointsToDraw().keys())
@@ -146,45 +159,32 @@ class Model():
     #     for point in self._filteredList:
     #         self.filterCallback(point)       
             
-    def filter(self, factor = 5):
-        def iteratePoints(pointsList, index_to_continue):
-            for point in pointsList:
-                idx = pointsList.index(point)
-                if (len(pointsList) > idx + index_to_continue):
-                    point = pointsList[idx + index_to_continue]
-                    print('checking point', point)
-                    x, y = point[0], point[1]
-                    for i in range(-factor, factor + 1):
-                        for j in range(-factor, factor + 1):
-                            if (x + i, y + j) in pointsList and (i != 0 and j != 0):
-                                print(f'found point {x+i} {y+j} near point {x} {y} ...continue')
-                                index_to_continue = pointsList.index((x, y))
-                                pointsList.remove((x + i, y + j))
-                                pointsList.remove((x, y))
-                                print(f'pointsList lenght {len(pointsList)}')
-                                iteratePoints(pointsList, index_to_continue)
-            return pointsList
+    # def filter(self, factor = 5):
+    #     def iteratePoints(pointsList, index_to_continue):
+    #         for point in pointsList:
+    #             idx = pointsList.index(point)
+    #             if (len(pointsList) > idx + index_to_continue):
+    #                 point = pointsList[idx + index_to_continue]
+    #                 print('checking point', point)
+    #                 x, y = point[0], point[1]
+    #                 for i in range(-factor, factor + 1):
+    #                     for j in range(-factor, factor + 1):
+    #                         if (x + i, y + j) in pointsList and (i != 0 and j != 0):
+    #                             print(f'found point {x+i} {y+j} near point {x} {y} ...continue')
+    #                             index_to_continue = pointsList.index((x, y))
+    #                             pointsList.remove((x + i, y + j))
+    #                             pointsList.remove((x, y))
+    #                             print(f'pointsList lenght {len(pointsList)}')
+    #                             iteratePoints(pointsList, index_to_continue)
+    #         return pointsList
         
-        self._pointsList = list(self.calculator.getPointsToDraw().keys())
-        self._points = self._pointsList.copy()
-        if (self._path):
-            self._pointsToRemove = iteratePoints(self._points, 0)
-            # restart = True
-            # while restart:
-            #     for point in self._points:
-            #         x, y = point[0][1]
-            #         for i in range(-factor, factor + 1):
-            #             for j in range(-factor, factor + 1):
-            #                 if (x + i, y + j) in self._points and (i != 0 and j != 0):
-            #                     print(f'found point {x+i} {y+j} near point {x} {y} ...continue')
-            #                     self._points = self._points.pop((x + i, y + j))
-            #                     self._points = self._points.pop((x, y))
-        
-        for point in self._pointsToRemove:
-            self.filterCallback(point)     
-            
-                                
-                    
+    #     self._pointsList = list(self.calculator.getPointsToDraw().keys())
+    #     self._points = self._pointsList.copy()
+    #     self._pointsToRemove = iteratePoints(self._points, 0)
+
+    #     for point in self._pointsToRemove:
+    #         self.filterCallback(point)     
+                            
     def __getCircleArea(self, r):
         x0 = 0
         y0 = 0
@@ -194,6 +194,19 @@ class Model():
                     if (i - x0)**2 + (j - y0)**2 <= r**2:
                         coordinates.append((i, j))
         return coordinates
+    
+    def sendToDB(self, path = ""):
+        try:
+            cred_obj = firebase_admin.credentials.Certificate("./service_account.json")
+            self.firebase = firebase_admin.initialize_app(cred_obj)
+            print('Succesfully connected to the database')
+        except Exception as e:
+            # print(e)
+            print('Unable to connect to the database')   
+             
+
+        
+        
                         
         
         

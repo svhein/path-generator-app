@@ -23,6 +23,7 @@ class pathCalculator:
             self.img = cv2.imread('canvas.jpg')
             self.width, self.height = self.img.shape[:2]
         
+        self.dict = {}
         for x in range(0, self.width - 1 , 1):
             for y in range (0, self.height - 1, 1):
                 pixel = self.img[x, y]           ## arvo joko 0 0 0 tai 255 255 255 joten eka arvo riittää
