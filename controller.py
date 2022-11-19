@@ -5,6 +5,7 @@ from tkinter.filedialog import askopenfilename
 from PIL import Image,ImageTk, ImageGrab
 
 
+
 import sys
 sys.setrecursionlimit(10000)
 
@@ -65,7 +66,8 @@ class Controller():
         self.model.calculatePath()
         
     def onFilterButtonPress(self):
-        self.model.filter()
+        threshold, k = self.view.getFilterParams()
+        self.model.filter(threshold, k)
         
     def onEraseButtonClick(self):
         self.model.eraseActivated = not bool(self.model.eraseActivated)

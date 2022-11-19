@@ -137,27 +137,37 @@ class View(tk.Tk):
         )
         self.resetButton.place( x = 800, y = 10)
         
-        self.pointVar = tk.StringVar()
-        self.pointVar.set('testi')
-        self.pointLabel = tk.Label(
-            self,
-            textvariable = self.pointVar
-        )
-        self.pointLabel.place(x = 900, y = 200)
+        # self.pointVar = tk.StringVar()
+        # self.pointVar.set('testi')
+        # self.pointLabel = tk.Label(
+        #     self,
+        #     textvariable = self.pointVar
+        # )
+        # self.pointLabel.place(x = 900, y = 200)
         
-        filterText = tk.Label(self, text = 'Filter Size' )
-        filterText.place(x = 670, y = 200)
+        filterSizeText = tk.Label(self, text = 'Filter Size:' )
+        filterSizeText.place(x = 670, y = 200)
         
-        self.filterEntryVar = tk.StringVar()
-        self.filterEntryVar.set(5)
-        self.filterEntry = tk.Entry(
+        self.filterSizeEntryVar = tk.StringVar()
+        self.filterSizeEntryVar.set(5)
+        self.filterSizeEntry = tk.Entry(
             self,
-            text = self.filterEntryVar,
+            text = self.filterSizeEntryVar,
             width = 3
         )
-        
-        self.filterEntry.place(x= 750, y = 200)
-        
+        self.filterSizeEntry.place(x= 725, y = 202)
+        #############################################
+        filterKText = tk.Label(self, text = "K:")
+        filterKText.place(x = 758, y = 202)
+        self.filterKVar = tk.StringVar()
+        self.filterKVar.set(3)
+        self.filterK_entry = tk.Entry(
+            self,
+            text = self.filterKVar,
+            width = 3
+        )
+        self.filterK_entry.place(x = 775, y = 202)
+
         self.calculateButton = tk.Button(
             self,
             text = 'Calculate Path',
@@ -224,6 +234,11 @@ class View(tk.Tk):
     def filterCallback(self, point: tuple):
         x, y = point[1], point[0]
         self.canvas.create_oval(x, y, x, y, width = 0, fill = 'red')
+        
+    def getFilterParams(self):
+        filterSize = self.filterSizeEntryVar.get()
+        k = self.filterKVar.get()
+        return int(filterSize), int(k)
       
     def main(self):
         self.mainloop()

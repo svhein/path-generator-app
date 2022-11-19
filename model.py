@@ -5,6 +5,7 @@ import numpy as np
 from path_calculator import pathCalculator
 import os
 import firebase_admin
+from scipy.spatial import distance
 
 
 # NOTE self._image must be handled as PIL.Image object. PIL.ImageTk is returned to controller
@@ -136,55 +137,49 @@ class Model():
             pil_image = Image.fromarray(color_coverted)
             self.imageTk = ImageTk.PhotoImage(pil_image)
             return self.imageTk
-        
     
-        
-    # toimiva:
-    # def filter(self):
-    #     self._points = list(self.calculator.getPointsToDraw().keys())
-    #     self._filteredList = self._points.copy()
-    #     blockSize = 10
-    #     print(self._filteredWist)
-    #     for point in self._points:
-    #         x, y = point[0], point[1]
-    #         for i in range(-blockSize, blockSize + 1):
-    #             for j in range(-blockSize, blockSize + 1):
-    #                 if (i != 0 and j != 0) and ((x + i, y + j) in self._points):
-    #                     if ((x, y) in self._filteredList):
-    #                         self._filteredList.remove((x, y))
-    #                         continue
-    #                     # if ((x + i, y + j) in self._filteredList):
-    #                     #     self._filteredList.remove((x + i, y + j))
-    #     # print(self._filteredList) WW
-    #     for point in self._filteredList:
-    #         self.filterCallback(point)       
-            
-    # def filter(self, factor = 5):
-    #     def iteratePoints(pointsList, index_to_continue):
-    #         for point in pointsList:
-    #             idx = pointsList.index(point)
-    #             if (len(pointsList) > idx + index_to_continue):
-    #                 point = pointsList[idx + index_to_continue]
-    #                 print('checking point', point)
-    #                 x, y = point[0], point[1]
-    #                 for i in range(-factor, factor + 1):
-    #                     for j in range(-factor, factor + 1):
-    #                         if (x + i, y + j) in pointsList and (i != 0 and j != 0):
-    #                             print(f'found point {x+i} {y+j} near point {x} {y} ...continue')
-    #                             index_to_continue = pointsList.index((x, y))
-    #                             pointsList.remove((x + i, y + j))
-    #                             pointsList.remove((x, y))
-    #                             print(f'pointsList lenght {len(pointsList)}')
-    #                             iteratePoints(pointsList, index_to_continue)
-    #         return pointsList
-        
-    #     self._pointsList = list(self.calculator.getPointsToDraw().keys())
-    #     self._points = self._pointsList.copy()
-    #     self._pointsToRemove = iteratePoints(self._points, 0)
-
-    #     for point in self._pointsToRemove:
-    #         self.filterCallback(point)     
-                            
+    def filter2(self, threshold = 10):
+        self._points = list(self.calculator.getPointsToDraw().keys())
+        self._points = np.asarray(self._points)
+        print(self._points)
+        pointsToRemove = []
+        for point in self._points:
+            print(f'checking point {point}')
+            # check distance to closest point:
+            x, y = point[0], point[1]
+            smallest_distance = distance.cdist([(x, y)], self._points).min()
+            print(f'distance {smallest_distance}')
+            # if distance above thresshold remove point
+            if (smallest_distance > threshold):
+                pointsToRemove.append(point)
+                self.filterCallback(point)
+                #closest_index = distance.cdist([point], self._points).argmin()
+                
+    def filter(self, threshold_distance: int = 10, k: int = 6):
+        print(threshold_distance, k)
+        self._points = list(self.calculator.getPointsToDraw().keys())
+        # self._points = np.asarray(self._points)
+        pointsToRemove = []
+        for i in range (len(self._points)):
+            point = self._points[i]
+            # point can't be in list when the closest point is search
+            copy = self._points[:]
+            copy.remove(point)
+            print(f'checking point {point}')
+            x, y = point[0], point[1]
+            ## get distances to another points
+            distances = distance.cdist([(x,y)], copy).reshape(-1).tolist()
+            idxs = np.argpartition(distances, k)[:k] #idxs contains indexes of k nearest points
+            # check distance of k nearest point
+            # if above theshold remove all points from idxs 0 to k-1
+            if (distances[idxs[k-1]] > threshold_distance):
+                for i in range (k-1):
+                    p = copy[idxs[i]]
+                    pointsToRemove.append(p)
+                    self.filterCallback(p)
+                pointsToRemove.append(point)
+                self.filterCallback(point)
+                                     
     def __getCircleArea(self, r):
         x0 = 0
         y0 = 0
