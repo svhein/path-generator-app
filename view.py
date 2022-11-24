@@ -3,7 +3,7 @@ from tkinter import *
 import tkinter.font as TkFont
 from tkinter import scrolledtext
 import sys
-from logger import tkinterLogger
+from utils.logger import tkinterLogger
 
 
 class View(tk.Tk):
@@ -137,7 +137,7 @@ class View(tk.Tk):
         )
         self.resetButton.place( x = 800, y = 10)
         
-        # self.pointVar = tk.StringVar()
+        self.pointVar = tk.StringVar()
         # self.pointVar.set('testi')
         # self.pointLabel = tk.Label(
         #     self,
@@ -188,7 +188,8 @@ class View(tk.Tk):
             self,
             text = "Remove Filtered",
             width = 24,
-            state = "disabled"
+            state = "disabled",
+            command = self.controller.onFilterRemoveButtonPress
         )
         self.removeFilteredButton.place(x = 670, y = 270)
         
@@ -218,7 +219,6 @@ class View(tk.Tk):
         )
         self.dataBaseButton.place(x = 670, y = 450)
         
-        
         self.wordInput = tk.Entry(
             self,
             width = 20
@@ -234,6 +234,7 @@ class View(tk.Tk):
     def filterCallback(self, point: tuple):
         x, y = point[1], point[0]
         self.canvas.create_oval(x, y, x, y, width = 0, fill = 'red')
+        
         
     def getFilterParams(self):
         filterSize = self.filterSizeEntryVar.get()

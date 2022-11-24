@@ -2,10 +2,12 @@ from PIL import Image,ImageTk
 import math
 import cv2
 import numpy as np
-from path_calculator import pathCalculator
+from utils.path_calculator import pathCalculator
 import os
 import firebase_admin
+from firebase_admin import db
 from scipy.spatial import distance
+import json
 
 
 # NOTE self._image must be handled as PIL.Image object. PIL.ImageTk is returned to controller
@@ -29,8 +31,10 @@ class Model():
         self._circleAreaPoints = self.__getCircleArea(self._brush_radius)
         
         try:
+            database_url = os.environ['DrawingAppDatabase']
+            print(database_url)
             cred_obj = firebase_admin.credentials.Certificate("./service_account.json")
-            self.firebase = firebase_admin.initialize_app(cred_obj)
+            self.firebase = firebase_admin.initialize_app(cred_obj, {'databaseURL' : f'{database_url}'})
             print('Succesfully connected to the database')
         except Exception as e:
             # print(e)
@@ -85,7 +89,7 @@ class Model():
             return self._image
         return self._image
     
-    def convert_to_grayscale(self, maxValue, blockSize, constant):
+    def convert_to_grayscale(self, maxValue, blockSize, constant) -> ImageTk.PhotoImage:
         image = np.asarray(self._image)
         # image = cv2.imread('canvasImage.jpg')
         # cv2.resize(image, (self._width, self._height))
@@ -116,12 +120,7 @@ class Model():
         
     def calculatePath(self):
         self._path = self.calculator.calculatePath()
-        
-    # def filter(self):
-    #     image = cv2.imread('canvas.jpg')
-    #     dst = cv2.fastNlMeansDenoising(image,None, h=100, templateWindowSize=1, searchWindowSize=5)
-    #     cv2.imshow('', dst)
-    
+      
     def erase(self, event) -> ImageTk.PhotoImage:
             '''Returns edited canvas image'''
             x, y = event.x, event.y
@@ -137,35 +136,15 @@ class Model():
             pil_image = Image.fromarray(color_coverted)
             self.imageTk = ImageTk.PhotoImage(pil_image)
             return self.imageTk
-    
-    def filter2(self, threshold = 10):
-        self._points = list(self.calculator.getPointsToDraw().keys())
-        self._points = np.asarray(self._points)
-        print(self._points)
-        pointsToRemove = []
-        for point in self._points:
-            print(f'checking point {point}')
-            # check distance to closest point:
-            x, y = point[0], point[1]
-            smallest_distance = distance.cdist([(x, y)], self._points).min()
-            print(f'distance {smallest_distance}')
-            # if distance above thresshold remove point
-            if (smallest_distance > threshold):
-                pointsToRemove.append(point)
-                self.filterCallback(point)
-                #closest_index = distance.cdist([point], self._points).argmin()
                 
     def filter(self, threshold_distance: int = 10, k: int = 6):
-        print(threshold_distance, k)
         self._points = list(self.calculator.getPointsToDraw().keys())
-        # self._points = np.asarray(self._points)
-        pointsToRemove = []
+        self._pointsToRemove = []
         for i in range (len(self._points)):
             point = self._points[i]
             # point can't be in list when the closest point is search
             copy = self._points[:]
             copy.remove(point)
-            print(f'checking point {point}')
             x, y = point[0], point[1]
             ## get distances to another points
             distances = distance.cdist([(x,y)], copy).reshape(-1).tolist()
@@ -175,10 +154,25 @@ class Model():
             if (distances[idxs[k-1]] > threshold_distance):
                 for i in range (k-1):
                     p = copy[idxs[i]]
-                    pointsToRemove.append(p)
+                    self._pointsToRemove.append(p)
                     self.filterCallback(p)
-                pointsToRemove.append(point)
+                self._pointsToRemove.append(point)
                 self.filterCallback(point)
+        if len(self._pointsToRemove) != 0:
+            pass
+        
+    def removeFilteredPoints(self) -> ImageTk.PhotoImage:
+        '''Removes points from canvas.jpg, returns edited photo'''
+        cv_image = cv2.imread("canvas.jpg")
+        for point in self._pointsToRemove:
+            x, y = point[0], point[1]    
+            print('removing point',x,y)
+            cv_image[x][y] = (255, 255 ,255) #FIXME: coordinates wrong way
+        cv2.imwrite('canvas.jpg', cv_image)
+        color_coverted = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
+        pil_image = Image.fromarray(color_coverted)
+        self.imageTk = ImageTk.PhotoImage(pil_image)
+        return self.imageTk
                                      
     def __getCircleArea(self, r):
         x0 = 0
@@ -191,18 +185,13 @@ class Model():
         return coordinates
     
     def sendToDB(self, path = ""):
+        testinimi = "TestiNimi"
         try:
-            cred_obj = firebase_admin.credentials.Certificate("./service_account.json")
-            self.firebase = firebase_admin.initialize_app(cred_obj)
-            print('Succesfully connected to the database')
+            db_ref = db.reference(f"/Paths/{testinimi}")
+            with open('pathGenerated.json', "r") as f:
+                content = json.load(f)
+            db_ref.set(content)
+            pass
         except Exception as e:
-            # print(e)
-            print('Unable to connect to the database')   
-             
-
-        
-        
-                        
-        
-        
-   
+            print(e)
+            print('Failed to send data')   

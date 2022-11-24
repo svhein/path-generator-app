@@ -3,5 +3,12 @@
 /test.py
 /test2.py
 /canvas.jpg
-/.env
+/firebaseConfig.json
+/service_account.json
 /testiii.json
+/lentokone.jpg
+/pathGenerated.json
+utils/__pycache__/logger.cpython-39.pyc
+utils/__pycache__/path_calculator.cpython-39.pyc
+tempCodeRunnerFile.py
+/tempCodeRunnerFile.py

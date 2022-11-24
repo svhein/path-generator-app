@@ -4,8 +4,6 @@ from model import Model
 from tkinter.filedialog import askopenfilename
 from PIL import Image,ImageTk, ImageGrab
 
-
-
 import sys
 sys.setrecursionlimit(10000)
 
@@ -42,15 +40,15 @@ class Controller():
         self.view.canvas.delete("all")
         self._newImg = self.model.get_Tk_Image()
         self.view.canvas.create_image(300,300, image = self._newImg)
-        # self.image = self.image.resize((self.x, self.y), Image.ANTIALIAS)
-        # self.imgTk = ImageTk.PhotoImage(self.image)
-        # self.canvas.create_image(300, 300, image = self.imgTk)
         
     def onConfigSliderChange(self, value):
     
         maxValue = self.view.maxValueSlider.get()
         blockSize = self.view.blockSizeSlider.get()
         constant = self.view.constantSlider.get()
+        while not (blockSize % 2 == 1 and blockSize > 1):
+            blockSize += 1
+        self.view.blockSizeSlider.set(blockSize)
         self.configImg = self.model.convert_to_grayscale(maxValue, blockSize, constant) 
         self.view.canvas.create_image(300, 300, image = self.configImg)
         
@@ -68,6 +66,11 @@ class Controller():
     def onFilterButtonPress(self):
         threshold, k = self.view.getFilterParams()
         self.model.filter(threshold, k)
+        self.view.removeFilteredButton.config(state = 'normal')
+        
+    def onFilterRemoveButtonPress(self):
+        pointsRemovedImg = self.model.removeFilteredPoints()
+        self.view.canvas.create_image(300, 300, image = pointsRemovedImg)
         
     def onEraseButtonClick(self):
         self.model.eraseActivated = not bool(self.model.eraseActivated)
