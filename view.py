@@ -5,7 +5,6 @@ from tkinter import scrolledtext
 import sys
 from utils.logger import tkinterLogger
 
-
 class View(tk.Tk):
     
     def __init__(self, Controller):
@@ -15,10 +14,12 @@ class View(tk.Tk):
         self.geometry('1280x720')
         self.configure(bg = 'lavender')
         self.resizable(width = False, height = False)
-        self.image = None
+        self.image = None   
         self.controller = Controller
+        self.CANVASWIDTH = 600
+        self.CANVASHEIGHT = 600
         
-        self.canvas = Canvas(self, width = 600, height = 600, bg = 'white', bd = 0, highlightthickness = 0)
+        self.canvas = Canvas(self, width = self.CANVASWIDTH, height =  self.CANVASHEIGHT, bg = 'white', bd = 0, highlightthickness = 0)
         self.canvas.place(x = 350, rely = 0.5, anchor = CENTER)
         self.circle = None
         
@@ -33,6 +34,7 @@ class View(tk.Tk):
         self.drawCircle(event)
         
     def drawCircle(self, event, r = 10):
+        r = self.radio.get()
         if(self.circle):
             self.canvas.delete(self.circle)
         x, y = event.x, event.y
@@ -149,7 +151,7 @@ class View(tk.Tk):
         filterSizeText.place(x = 670, y = 200)
         
         self.filterSizeEntryVar = tk.StringVar()
-        self.filterSizeEntryVar.set(5)
+        self.filterSizeEntryVar.set(2)
         self.filterSizeEntry = tk.Entry(
             self,
             text = self.filterSizeEntryVar,
@@ -160,7 +162,7 @@ class View(tk.Tk):
         filterKText = tk.Label(self, text = "K:")
         filterKText.place(x = 758, y = 202)
         self.filterKVar = tk.StringVar()
-        self.filterKVar.set(3)
+        self.filterKVar.set(2)
         self.filterK_entry = tk.Entry(
             self,
             text = self.filterKVar,
@@ -219,11 +221,41 @@ class View(tk.Tk):
         )
         self.dataBaseButton.place(x = 670, y = 450)
         
-        self.wordInput = tk.Entry(
+        self.nameInput = tk.Entry(
             self,
-            width = 20
+            width = 20,
         )
-        self.wordInput.place(x = 670, y = 400)
+        self.nameInput.place(x = 670, y = 400)
+        
+        self.radio = tk.IntVar()
+        self.radioButtonBig = tk.Radiobutton(
+            self,
+            text = 'Big',
+            variable = self.radio,
+            value = 40,
+            command = self.controller.onRadioButtonClick
+        )
+        self.radioButtonBig.place(x=200, y=675)
+        self.radioButtonSmall = tk.Radiobutton(
+            self,
+            text = 'Small',
+            variable = self.radio,
+            value = 10,
+            command = self.controller.onRadioButtonClick
+        )
+        self.radioButtonSmall.place(x = 225, y = 675)
+        
+        self.simulateButton = tk.Button(
+            self,
+            text = 'Simulate',
+            command = self.controller.onSimulateButtonClick
+        )
+        self.simulateButton.place(x = 190, y = 675)
+    
+    def setSimulatorWindow(self, window):
+        window.attributes('-topmost',True)
+        simWindow = Label(window)
+        simWindow.place(x = 350, rely = 0.5, anchor = CENTER)
         
     def showPointsCallback(self, point):
         self.pointVar.set(point)
@@ -235,11 +267,13 @@ class View(tk.Tk):
         x, y = point[1], point[0]
         self.canvas.create_oval(x, y, x, y, width = 0, fill = 'red')
         
-        
     def getFilterParams(self):
         filterSize = self.filterSizeEntryVar.get()
         k = self.filterKVar.get()
         return int(filterSize), int(k)
+    
+    def getCanvasSize(self) -> tuple:
+        return self.CANVASWIDTH, self.CANVASHEIGHT
       
     def main(self):
         self.mainloop()

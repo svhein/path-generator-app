@@ -1,17 +1,20 @@
 from tkinter import RAISED, SUNKEN
 from view import View
 from model import Model
+from simulator import Simulator
 from tkinter.filedialog import askopenfilename
 from PIL import Image,ImageTk, ImageGrab
-
-import sys
-sys.setrecursionlimit(10000)
 
 class Controller():
     def __init__(self):
         self.view = View(self)
         self.model = Model(self.view.showPointsCallback,
-                           self.view.filterCallback)
+                           self.view.filterCallback,
+                           self.view.nameInput.get)
+        
+        self.simulator = Simulator(self.view.getCanvasSize())
+        self.eraserSize = None
+    
          
     def main(self):
         self.view.main()
@@ -87,8 +90,16 @@ class Controller():
             
     def onDatabaseButtonClick(self):
         self.model.sendToDB()
-        
               
+    def onRadioButtonClick(self):
+        self.eraserSize = self.view.radio.get()
+        print('eraser set to', self.eraserSize)
+        pass
+    
+    def onSimulateButtonClick(self):
+        self.view.setSimulatorWindow(self.simulator.animation_root)
+        self.simulator.simulate()
+    
 if __name__ == '__main__':
     app = Controller()
     app.main()

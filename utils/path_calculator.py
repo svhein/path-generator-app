@@ -81,7 +81,8 @@ class pathCalculator:
         pass
      
     def calculatePath(self) -> list:
-        '''returns path in list of objects (each object is coordinate)'''
+        '''returns path in list of objects (each object is coordinate)
+            Also saves pathGenerated.json in working directory'''
         print('Calculating path...')
         self.__filename = 'canvas.jpg'
         self.img = cv2.imread(self.__filename)

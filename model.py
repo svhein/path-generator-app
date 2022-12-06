@@ -8,12 +8,12 @@ import firebase_admin
 from firebase_admin import db
 from scipy.spatial import distance
 import json
-
+import dotenv
 
 # NOTE self._image must be handled as PIL.Image object. PIL.ImageTk is returned to controller
 
 class Model():
-    def __init__(self, showPointsCallback, filterCallback):
+    def __init__(self, showPointsCallback, filterCallback, getName):
         self.imageOriginal = None
         self._image = None
         self._canvasImage = None
@@ -30,8 +30,11 @@ class Model():
         self._brush_radius = 4
         self._circleAreaPoints = self.__getCircleArea(self._brush_radius)
         
+        self.getName = getName
+        
         try:
-            database_url = os.environ['DrawingAppDatabase']
+            dotenv.load_dotenv()
+            database_url = os.getenv('DATABASE_URL')
             print(database_url)
             cred_obj = firebase_admin.credentials.Certificate("./service_account.json")
             self.firebase = firebase_admin.initialize_app(cred_obj, {'databaseURL' : f'{database_url}'})
@@ -68,7 +71,7 @@ class Model():
     def setImage(self, img):
         self._image = img
         self._width, self._height = self._image.size
-        
+              
     # function optimazes picture size when first downloaded
     def scale_image(self):
         width, height = self._image.size
@@ -119,25 +122,42 @@ class Model():
         img.close()
         
     def calculatePath(self):
+        '''Saves path object to self._path variable
+        and also in pathGenerated.json in working directory'''
         self._path = self.calculator.calculatePath()
       
+    # def erase(self, event) -> ImageTk.PhotoImage:
+    #         '''Returns edited canvas image'''
+    #         x, y = event.x, event.y
+    #         cv_image = cv2.imread("canvas.jpg")
+    #         r = 5
+    #         for i, j in self._circleAreaPoints:
+    #             cv_image[y + j][x + i] = (255, 255 ,255) #FIXME: coordinates wrong way
+    #         cv2.imwrite('canvas.jpg', cv_image)
+    #         color_coverted = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
+    #         pil_image = Image.fromarray(color_coverted)
+    #         self.imageTk = ImageTk.PhotoImage(pil_image)
+    #         return self.imageTk
+    
     def erase(self, event) -> ImageTk.PhotoImage:
-            '''Returns edited canvas image'''
-            x, y = event.x, event.y
-            cv_image = cv2.imread("canvas.jpg")
-            r = 5
-            # for i in range (-r , r + 1):
-            #     for j in range (-(r-i), r-i):
-            #         image[x+i][y+j] = (255, 255, 255)
-            for i, j in self._circleAreaPoints:
-                cv_image[y + j][x + i] = (255, 255 ,255) #FIXME: coordinates wrong way
-            cv2.imwrite('canvas.jpg', cv_image)
-            color_coverted = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
-            pil_image = Image.fromarray(color_coverted)
-            self.imageTk = ImageTk.PhotoImage(pil_image)
-            return self.imageTk
-                
-    def filter(self, threshold_distance: int = 10, k: int = 6):
+        cv_image = cv2.imread('canvas.jpg')
+        r = 10
+        x, y = event.x, event.y
+        cv2.circle(cv_image, (x,y), r, (255, 255, 255), -1)
+        cv2.imwrite('canvas.jpg', cv_image)
+        color_coverted = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
+        pil_image = Image.fromarray(color_coverted)
+        self.imageTk = ImageTk.PhotoImage(pil_image)
+        return self.imageTk
+        
+                        
+    def filter(self, threshold_radius: int = 10, k: int = 6):
+        '''
+        itares through every point and checks how many points are near it   
+        Args: 
+            threshold_radius: Radius of circle where points are searched'
+            k: Number of points required to be in the circle'
+        '''
         self._points = list(self.calculator.getPointsToDraw().keys())
         self._pointsToRemove = []
         for i in range (len(self._points)):
@@ -149,9 +169,9 @@ class Model():
             ## get distances to another points
             distances = distance.cdist([(x,y)], copy).reshape(-1).tolist()
             idxs = np.argpartition(distances, k)[:k] #idxs contains indexes of k nearest points
-            # check distance of k nearest point
+            # check distance of farthest point
             # if above theshold remove all points from idxs 0 to k-1
-            if (distances[idxs[k-1]] > threshold_distance):
+            if (distances[idxs[k-1]] > threshold_radius):
                 for i in range (k-1):
                     p = copy[idxs[i]]
                     self._pointsToRemove.append(p)
@@ -184,14 +204,35 @@ class Model():
                         coordinates.append((i, j))
         return coordinates
     
-    def sendToDB(self, path = ""):
-        testinimi = "TestiNimi"
-        try:
-            db_ref = db.reference(f"/Paths/{testinimi}")
-            with open('pathGenerated.json', "r") as f:
-                content = json.load(f)
-            db_ref.set(content)
-            pass
-        except Exception as e:
-            print(e)
-            print('Failed to send data')   
+    def sendToDB(self):
+        name = self.getName()
+        if(name):
+            try:
+                self.__compileJson()
+                db_ref = db.reference(f"/Paths/{name}")
+                with open('compiled.json', "r") as f:
+                    content = json.load(f)
+                db_ref.set(content)
+                print('Work succesfully send to database')
+                
+            except Exception as e:
+                print(e)
+                print('Failed to send data')   
+        else:
+            print('Give picture name')
+    
+    def __compileJson(self):
+        '''Creates json in working directory to be sent in to database'''
+        word = self.getName()
+        letters = list(word)
+            
+        with open('pathGenerated.json', "r") as f:
+            path = json.load(f)
+            dict = {
+                'word' : word,
+                'letters' : letters,
+                'path' : path
+            }
+            object = json.dumps(dict, indent=4)
+            with open('compiled.json', 'w') as file:
+                file.write(object)
