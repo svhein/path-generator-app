@@ -11,7 +11,7 @@ class View(tk.Tk):
         super().__init__()
         self.id = '1'
         self.title('Path Generator App')
-        self.geometry('1280x720')
+        self.geometry('920x720')
         self.configure(bg = 'lavender')
         self.resizable(width = False, height = False)
         self.image = None   
@@ -130,14 +130,14 @@ class View(tk.Tk):
         self.constantSlider.set(1)
         
         self.openFileButton = tk.Button(self, text = "Upload Image", command = self.controller.openImageFile)
-        self.openFileButton.place( x = 700, y = 10)
+        self.openFileButton.place( x = 670, y = 10)
         
         self.resetButton = tk.Button(
             self,
             text = 'Reset Image',
             command = self.controller.resetCanvasImage
         )
-        self.resetButton.place( x = 800, y = 10)
+        self.resetButton.place( x = 770, y = 10)
         
         self.pointVar = tk.StringVar()
         # self.pointVar.set('testi')
@@ -250,12 +250,20 @@ class View(tk.Tk):
             text = 'Simulate',
             command = self.controller.onSimulateButtonClick
         )
-        self.simulateButton.place(x = 190, y = 675)
+        self.simulateButton.place(x = 400, y = 675)
+        self.stopSimulationButton = tk.Button(
+            self,
+            text = 'Stop Sim',
+            command = self.controller.onStopSimulationClick
+        )
+        self.stopSimulationButton.place(x = 450, y = 675)
     
-    def setSimulatorWindow(self, window):
-        window.attributes('-topmost',True)
-        simWindow = Label(window)
-        simWindow.place(x = 350, rely = 0.5, anchor = CENTER)
+    # def setSimulatorFrame(frame):
+
+    #     # window.attributes('-topmost',True)
+    #     simFrame = Label(frame)
+    #     simFrame.place(x = 350, rely = 0.5, anchor = CENTER)
+    #     simFrame.tkraise()
         
     def showPointsCallback(self, point):
         self.pointVar.set(point)

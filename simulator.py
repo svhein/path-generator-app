@@ -4,12 +4,12 @@ import json
 
 class Simulator():
     
-    def __init__(self, canvasSize):
+    def __init__(self, parent, canvasSize):
     
-        self.animation_root = tk.Toplevel()
-        self.animation_root.title('Sim')
+        self.animation_root = tk.Frame(parent)
+        # self.animation_root.title('Sim')
         self.height, self.width = canvasSize[0], canvasSize[1]
-        self.animation_root.geometry('{}x{}'.format(self.height,self.width))
+        # self.animation_root.geometry('{}x{}'.format(self.height,self.width))
         
         self.animation_canvas = Canvas(self.animation_root, width=self.width, height=self.height,bd=0,highlightthickness=0)
         self.animation_canvas.pack()
@@ -19,12 +19,13 @@ class Simulator():
         self.image = self.animation_canvas.create_image(0, 0, anchor=NW, image=self.background_image)
         
         self.animation_root.bind('<s>', self.simulate)
-        self.animation_root.bind('<q>', self.lopetaAnimaatio)
-
+        self.animation_root.bind('<q>', self.stopSimulation)
         # self.animation_root.mainloop()
     
-    def simulate(self, event):
+    def simulate(self):
         
+        # self.animation_root.pack()
+        self.animation_root.place(x = 350, rely = 0.5, anchor = CENTER)
         move = 0
         eka = True
         ekaRivi = False #TODO tämä kai turha nykyään
@@ -79,7 +80,8 @@ class Simulator():
         
             eka = False
                  
-    def lopetaAnimaatio(self, event):
+    def stopSimulation(self):
+        self.animation_root.pack_forget()
         self.animation_root.destroy()
             
 

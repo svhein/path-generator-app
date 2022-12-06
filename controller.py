@@ -12,7 +12,7 @@ class Controller():
                            self.view.filterCallback,
                            self.view.nameInput.get)
         
-        self.simulator = Simulator(self.view.getCanvasSize())
+        self.simulator = Simulator(self.view, self.view.getCanvasSize())
         self.eraserSize = None
     
          
@@ -97,8 +97,12 @@ class Controller():
         pass
     
     def onSimulateButtonClick(self):
-        self.view.setSimulatorWindow(self.simulator.animation_root)
+        # self.view.setSimulatorFrame(self.simulator.animation_root)
         self.simulator.simulate()
+        
+    def onStopSimulationClick(self):
+        self.simulator.stopSimulation()
+        self.simulator = Simulator(self.view, self.view.getCanvasSize())
     
 if __name__ == '__main__':
     app = Controller()
