@@ -1,4 +1,3 @@
-from colorsys import yiq_to_rgb
 import cv2
 import numpy as np
 from scipy import spatial
@@ -7,10 +6,7 @@ import json
 
 class pathCalculator:
     def __init__(self, showPointsCallback):
-        # self.filename = filename
-        # self.img = cv2.imread(filename)
-        # self.width, self.height = self.img.shape[:2]
-        # print(f'width: {self.width} height: {self.height}') 
+
         self.pointsToDraw = []
         self.dict = {}
         self.pathJson = []
@@ -22,12 +18,12 @@ class pathCalculator:
         if not (self.width):
             self.img = cv2.imread('canvas.jpg')
             self.width, self.height = self.img.shape[:2]
-        
+        self.pointsToDraw = []
         self.dict = {}
         for x in range(0, self.width - 1 , 1):
             for y in range (0, self.height - 1, 1):
                 pixel = self.img[x, y]           ## arvo joko 0 0 0 tai 255 255 255 joten eka arvo riittää
-                if (pixel[0] < 150):
+                if (pixel[0] < 230):
                     self.pointsToDraw.append((x, y))
                     self.dict[(x,y)] = 1
         
@@ -76,8 +72,6 @@ class pathCalculator:
                    "y": memory_y,
                    "z": memory_z}
             self.pathJson.append(obj)
-            # print(f'({memory_x},{memory_y},{memory_z})')
-            # print(f'coordinates added: ({memory_x},{memory_y},{memory_z})')
         pass
      
     def calculatePath(self) -> list:
@@ -91,6 +85,7 @@ class pathCalculator:
         self.__findPointsToDraw()
         lastX, lastY, lastZ = 0, 0, 0
         i = 0
+        self.pathJson = []
  
         while(len(self.pointsToDraw) > 0):
             # print(len(self.pointsToDraw))
@@ -102,19 +97,16 @@ class pathCalculator:
                 self.__AddPathBetweenPoints(lastX,lastY,lastZ,x,y,z)
                 lastZ = z
                 i += 1
+                self.showPointsCallback((x, y))
             else:
                 self.__AddPathBetweenPoints(lastX,lastY,lastZ,x,y,10)
                 self.__AddPathBetweenPoints(x,y,10,x,y,0)
                 i += 1
-            self.showPointsCallback((x, y))
+            
             # print(i)
             lastX = x
             lastY = y
-            
-        # with open('dict_test.json', 'w') as f:
-        #     json.dump(self.dict, f, indent = 1)
-          
-        # askFileName = input('nimi tiedostolle: ')
+
         with open('pathGenerated.json', 'w') as file:
             json.dump(self.pathJson, file, indent=1)    
         print('...Calculating done')
@@ -125,3 +117,4 @@ class pathCalculator:
         '''return dictionary of which keys are coordinates of drawable points on the canvas'''
         self.__findPointsToDraw()
         return self.dict
+        

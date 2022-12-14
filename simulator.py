@@ -15,7 +15,7 @@ class Simulator():
         self.animation_canvas.pack()
         PhotoImage(master = self.animation_root, width = 600, height = 600)
         
-        self.background_image = PhotoImage(file="utils/valkoinen.png")
+        self.background_image = PhotoImage(file="valkoinen.png")
         self.image = self.animation_canvas.create_image(0, 0, anchor=NW, image=self.background_image)
         
         self.animation_root.bind('<s>', self.simulate)
@@ -38,10 +38,7 @@ class Simulator():
             if (ekaRivi):
                 ekaRivi = False
                 continue
-
-            # animation_x = row[2]
-            # animation_y = row[1]
-            # animation_z = row[3]
+            
             animation_x = object['y']
             animation_y = object['x']
             animation_z = object['z']
@@ -71,9 +68,7 @@ class Simulator():
             if (animation_z == 0):
                 self.background_image.put("#%02x%02x%02x" % (0, 0, 0), (animation_x, animation_y))
                 move += 1
-                 
-            print("{},{},{}".format(animation_x,animation_y,animation_z))
-            
+                  
             lastX = animation_x
             lastY = animation_y
             lastZ = animation_z

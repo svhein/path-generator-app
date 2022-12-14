@@ -3,14 +3,11 @@ import math
 import cv2
 import numpy as np
 from utils.path_calculator import pathCalculator
-import os
 import firebase_admin
-from firebase_admin import db
+import os
 from scipy.spatial import distance
 import json
 import dotenv
-
-# NOTE self._image must be handled as PIL.Image object. PIL.ImageTk is returned to controller
 
 class Model():
     def __init__(self, showPointsCallback, filterCallback, getName):
@@ -35,7 +32,6 @@ class Model():
         try:
             dotenv.load_dotenv()
             database_url = os.getenv('DATABASE_URL')
-            print(database_url)
             cred_obj = firebase_admin.credentials.Certificate("./service_account.json")
             self.firebase = firebase_admin.initialize_app(cred_obj, {'databaseURL' : f'{database_url}'})
             print('Succesfully connected to the database')
@@ -126,24 +122,11 @@ class Model():
         and also in pathGenerated.json in working directory'''
         self._path = self.calculator.calculatePath()
       
-    # def erase(self, event) -> ImageTk.PhotoImage:
-    #         '''Returns edited canvas image'''
-    #         x, y = event.x, event.y
-    #         cv_image = cv2.imread("canvas.jpg")
-    #         r = 5
-    #         for i, j in self._circleAreaPoints:
-    #             cv_image[y + j][x + i] = (255, 255 ,255) #FIXME: coordinates wrong way
-    #         cv2.imwrite('canvas.jpg', cv_image)
-    #         color_coverted = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
-    #         pil_image = Image.fromarray(color_coverted)
-    #         self.imageTk = ImageTk.PhotoImage(pil_image)
-    #         return self.imageTk
     
-    def erase(self, event) -> ImageTk.PhotoImage:
+    def erase(self, event, radius = 10) -> ImageTk.PhotoImage:
         cv_image = cv2.imread('canvas.jpg')
-        r = 10
         x, y = event.x, event.y
-        cv2.circle(cv_image, (x,y), r, (255, 255, 255), -1)
+        cv2.circle(cv_image, (x,y), radius, (255, 255, 255), -1)
         cv2.imwrite('canvas.jpg', cv_image)
         color_coverted = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
         pil_image = Image.fromarray(color_coverted)
@@ -159,6 +142,7 @@ class Model():
             k: Number of points required to be in the circle'
         '''
         self._points = list(self.calculator.getPointsToDraw().keys())
+        print(len(self._points))
         self._pointsToRemove = []
         for i in range (len(self._points)):
             point = self._points[i]
@@ -186,7 +170,7 @@ class Model():
         cv_image = cv2.imread("canvas.jpg")
         for point in self._pointsToRemove:
             x, y = point[0], point[1]    
-            print('removing point',x,y)
+            # print('removing point',x,y)
             cv_image[x][y] = (255, 255 ,255) #FIXME: coordinates wrong way
         cv2.imwrite('canvas.jpg', cv_image)
         color_coverted = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)

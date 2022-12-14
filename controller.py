@@ -3,7 +3,7 @@ from view import View
 from model import Model
 from simulator import Simulator
 from tkinter.filedialog import askopenfilename
-from PIL import Image,ImageTk, ImageGrab
+from PIL import Image
 
 class Controller():
     def __init__(self):
@@ -85,7 +85,7 @@ class Controller():
     
     def onCanvasClick(self, event):
         if(self.model.eraseActivated):
-            erasedImg = self.model.erase(event)
+            erasedImg = self.model.erase(event, self.eraserSize)
             self.view.canvas.create_image(300, 300, image = erasedImg)
             
     def onDatabaseButtonClick(self):
@@ -93,8 +93,6 @@ class Controller():
               
     def onRadioButtonClick(self):
         self.eraserSize = self.view.radio.get()
-        print('eraser set to', self.eraserSize)
-        pass
     
     def onSimulateButtonClick(self):
         # self.view.setSimulatorFrame(self.simulator.animation_root)

@@ -45,11 +45,7 @@ class View(tk.Tk):
         self.circle = self.canvas.create_oval(x0, y0, x1, y1 )
     
     def __create_widgets(self):
-        
-        # self.canvas = Canvas(self, width = 600, height = 600, bg = 'white', bd = 0, highlightthickness = 0)
-        # self.canvas.place(x = 350, rely = 0.5, anchor = CENTER
-        
-         
+          
         self.font10 = TkFont.Font(
             size = 8
         )
@@ -221,11 +217,13 @@ class View(tk.Tk):
         )
         self.dataBaseButton.place(x = 670, y = 450)
         
+        self.nameLabel = tk.Label(self, text = 'Name:')
+        self.nameLabel.place(x = 670, y = 390)
         self.nameInput = tk.Entry(
             self,
-            width = 20,
+            width = 24,
         )
-        self.nameInput.place(x = 670, y = 400)
+        self.nameInput.place(x = 670, y = 410)
         
         self.radio = tk.IntVar()
         self.radioButtonBig = tk.Radiobutton(
@@ -243,27 +241,20 @@ class View(tk.Tk):
             value = 10,
             command = self.controller.onRadioButtonClick
         )
-        self.radioButtonSmall.place(x = 225, y = 675)
+        self.radioButtonSmall.place(x = 250, y = 675)
         
         self.simulateButton = tk.Button(
             self,
             text = 'Simulate',
             command = self.controller.onSimulateButtonClick
         )
-        self.simulateButton.place(x = 400, y = 675)
+        self.simulateButton.place(x = 500, y = 675)
         self.stopSimulationButton = tk.Button(
             self,
             text = 'Stop Sim',
             command = self.controller.onStopSimulationClick
         )
-        self.stopSimulationButton.place(x = 450, y = 675)
-    
-    # def setSimulatorFrame(frame):
-
-    #     # window.attributes('-topmost',True)
-    #     simFrame = Label(frame)
-    #     simFrame.place(x = 350, rely = 0.5, anchor = CENTER)
-    #     simFrame.tkraise()
+        self.stopSimulationButton.place(x = 560, y = 675)
         
     def showPointsCallback(self, point):
         self.pointVar.set(point)
