@@ -1,4 +1,8 @@
-Rata tallenetaan JSON tiedostona jotta sitä voi soveltaa myös web-sovellukseen:
+# Ratageneraattori
+
+Ohjelman tarkoituksena on generoida valokuvasta rata piirrustusohjelmalle ja se sisältää mahdollisuuden parametrien syöttämiseen kuvankäsittelyalgoritmille sekä filtterille.  Ohjelma on jaettu kolmeen osaan: malliin, näkymään ja kontrolleriin. Malli sisältää säilyttää ohjelman sisältämän datan ja muokkaa sitä. Näkymä sisältää käyttöliittymän komponentit. Kontrolleri ohjaa mallin ja näkymän toimintaa käyttäjän toiminnan perusteella. 
+
+ Rata tallenetaan JSON tiedostona jotta sitä voi soveltaa myös web-sovellukseen:
  ```json
 [
  {
