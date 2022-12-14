@@ -31,7 +31,7 @@ Projektista voi luoda .exe tiedoston pyinstallerilla seuraavalla komennolla:
 ```
 pyinstaller --onefile controller.py
 ```
-.exe tiedoston kanssa samaan tiedostoon on lisättävä repositysta löytyvä 'valkoinen.png'
+.exe tiedoston kanssa samaan tiedostoon on lisättävä repositysta löytyvä 'utils/valkoinen.png'
 
 ## Työssä käytetyt kirjastot
 
