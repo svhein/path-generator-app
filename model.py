@@ -2,7 +2,7 @@ from PIL import Image,ImageTk
 import math
 import cv2
 import numpy as np
-from utils.path_calculator import pathCalculator
+from path_calculator import pathCalculator
 import firebase_admin
 import os
 from scipy.spatial import distance
