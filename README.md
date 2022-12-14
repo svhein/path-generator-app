@@ -15,7 +15,8 @@ pyinstaller --onefile controller.py
 3. Numpy
 4. Scipy
 5. Math
-6. (Firebase)
+6. json
+7. (Firebase)
 
 
 
