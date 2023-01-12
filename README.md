@@ -1,8 +1,11 @@
-# Ratageneraattori
+# Path generator
+-	Build with Python and tkinter, path generator app is a tool to generate animation paths from .jpeg images
+-	Allows users to pass parameters to image processing algorithm and filter processed images
+-	Includes simulation feature to illustrate generated paths
+-	Can be used to create a drawing game for example
+- Follows principles of Model-View-Controller architecture
 
-Ohjelman tarkoituksena on generoida valokuvasta rata piirrustusohjelmalle ja se sisältää mahdollisuuden parametrien syöttämiseen kuvankäsittelyalgoritmille sekä filtterille.  Ohjelma on jaettu kolmeen osaan: malliin, näkymään ja kontrolleriin. Malli sisältää säilyttää ohjelman sisältämän datan ja muokkaa sitä. Näkymä sisältää käyttöliittymän komponentit. Kontrolleri ohjaa mallin ja näkymän toimintaa käyttäjän toiminnan perusteella. 
 
- Rata tallenetaan JSON tiedostona jotta sitä voi soveltaa myös web-sovellukseen:
  ```json
 [
  {
