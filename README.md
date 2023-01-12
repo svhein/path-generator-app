@@ -5,6 +5,7 @@
 -	Can be used to create a drawing game for example
 - Follows principles of Model-View-Controller architecture
 
+Program outputs .json file containing continius 3D curve:
 
  ```json
 [
@@ -26,26 +27,16 @@
  ...jne
 ```
 
- 
+### Web demonstration
+- Rendering path on web page 
+- [https://codesandbox.io/s/nifty-moore-zfzqjv?file=/src/Canvas.js](https://codesandbox.io/s/nifty-moore-zfzqjv?file=/src/Canvas.js)
 
- 
+## Libraries used
 
-Projektista voi luoda .exe tiedoston pyinstallerilla seuraavalla komennolla:
-```
-pyinstaller --onefile controller.py
-```
-.exe tiedoston kanssa samaan tiedostoon on lisättävä repositysta löytyvä 'utils/valkoinen.png'
-
-## Työssä käytetyt kirjastot
-
-1. Tkinter
-2. OpenCv
-3. Numpy
+1. tkinter
+2. opencv-python
+3. Pillow
 4. Scipy
-5. Math
-6. json
-7. (Firebase)
-
 
 
 ## GIF
