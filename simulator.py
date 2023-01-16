@@ -15,7 +15,7 @@ class Simulator():
         self.animation_canvas.pack()
         PhotoImage(master = self.animation_root, width = 600, height = 600)
         
-        self.background_image = PhotoImage(file="valkoinen.png")
+        self.background_image = PhotoImage(file="whiteBackground.png")
         self.image = self.animation_canvas.create_image(0, 0, anchor=NW, image=self.background_image)
         
         self.animation_root.bind('<s>', self.simulate)

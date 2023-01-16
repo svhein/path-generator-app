@@ -217,6 +217,13 @@ class View(tk.Tk):
         )
         self.dataBaseButton.place(x = 670, y = 450)
         
+        self.saveLocalButton = tk.Button(
+            self,
+            text = 'Save Locally',
+            state = 'disabled'
+        )
+        self.saveLocalButton.place(x = 780, y = 450)
+        
         self.nameLabel = tk.Label(self, text = 'Name:')
         self.nameLabel.place(x = 670, y = 390)
         self.nameInput = tk.Entry(
