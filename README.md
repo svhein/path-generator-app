@@ -1,22 +1,42 @@
-# Ratageneraattori
+# Path generator
+-	Build with Python and tkinter, path generator app is a tool to generate animation paths from .jpeg images
+-	Allows users to pass parameters to image processing algorithm and filter processed images
+-	Includes simulation feature to illustrate generated paths
+-	Can be used to create a drawing game for example
+- Follows principles of Model-View-Controller architecture
 
-Ohjelman tarkoituksena on generoida valokuvasta rata piirrustusohjelmalle ja se sisältää mahdollisuuden parametrien syöttämiseen kuvankäsittelyalgoritmille sekä filtterille.  Ohjelma on jaettu kolmeen osaan: malliin, näkymään ja kontrolleriin. Malli sisältää säilyttää ohjelman sisältämän datan ja muokkaa sitä. Näkymä sisältää käyttöliittymän komponentit. Kontrolleri ohjaa mallin ja näkymän toimintaa käyttäjän toiminnan perusteella.
+Program outputs .json file containing continius 3D curve:
 
-Projektista voi luoda .exe tiedoston pyinstallerilla seuraavalla komennolla:
+ ```json
+[
+ {
+  "x": 1,
+  "y": 1,
+  "z": 1
+ },
+ {
+  "x": 2,
+  "y": 2,
+  "z": 2
+ },
+ {
+  "x": 3,
+  "y": 3,
+  "z": 3
+ },
+ ...jne
 ```
-pyinstaller --onefile controller.py
-```
-.exe tiedoston kanssa samaan tiedostoon on lisättävä repositysta löytyvä 'valkoinen.png'
 
-## Työssä käytetyt kirjastot
+### Web demonstration
+- Rendering path on web page 
+- [https://codesandbox.io/s/drawing-demo-zfzqjv?file=/src/Canvas.js](https://codesandbox.io/s/drawing-demo-zfzqjv?file=/src/Canvas.js)
 
-1. Tkinter
-2. OpenCv
-3. Numpy
+## Libraries used
+
+1. tkinter
+2. opencv-python
+3. Pillow
 4. Scipy
-5. Math
-6. (Firebase)
-
 
 
 ## GIF
