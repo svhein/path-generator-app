@@ -29,7 +29,7 @@ Program outputs .json file containing continius 3D curve:
 
 ### Web demonstration
 - Rendering path on web page 
-- [https://codesandbox.io/s/nifty-moore-zfzqjv?file=/src/Canvas.js](https://codesandbox.io/s/nifty-moore-zfzqjv?file=/src/Canvas.js)
+- [https://codesandbox.io/s/drawing-demo-zfzqjv?file=/src/Canvas.js](https://codesandbox.io/s/drawing-demo-zfzqjv?file=/src/Canvas.js)
 
 ## Libraries used
 
