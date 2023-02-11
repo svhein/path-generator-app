@@ -24,7 +24,7 @@ Program outputs .json file containing continius 3D curve:
   "y": 3,
   "z": 3
  },
- ...jne
+ ...etc
 ```
 
 ### Web demonstration
