@@ -5,6 +5,9 @@
 -	Can be used to create a drawing game for example
 - Follows principles of Model-View-Controller architecture
 
+## GIF
+<img src="https://github.com/svhein/gif/blob/main/lentsikka2.gif" height="600" width="800" />
+
 Program outputs .json file containing continius 3D curve:
 
  ```json
@@ -39,5 +42,3 @@ Program outputs .json file containing continius 3D curve:
 4. Scipy
 
 
-## GIF
-<img src="https://github.com/svhein/gif/blob/main/lentsikka2.gif" height="600" width="800" />
